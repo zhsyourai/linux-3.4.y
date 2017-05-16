@@ -1649,6 +1649,38 @@ static struct platform_device pwm_led_device = {
 };
 #endif
 
+#if defined(CONFIG_GPIO_KEYS)
+#include <linux/input.h>
+#include <linux/gpio_keys.h>
+
+#define WAKEUP_GPIO  (PAD_GPIO_C + 4)
+
+static struct gpio_keys_button btn[] = {
+    {
+        .code = KEY_HOME,
+        .active_low = 0,
+        .type = EV_KEY,
+        .desc = "gpio-key-home",
+        .gpio = WAKEUP_GPIO,
+        .debounce_interval = 5,
+    },
+};
+
+static struct gpio_keys_platform_data gpio_data = {
+    .nbuttons = ARRAY_SIZE(btn),
+    .buttons = btn,
+};
+
+static struct platform_device gpio_keys_device = {
+	.name		= "gpio-keys",
+	.id			= -1,
+	.dev		= {
+		.platform_data	= &gpio_data,
+	},
+	.num_resources = 0,
+};
+#endif
+
 /*------------------------------------------------------------------------------
  * Boot device
  */
@@ -1908,6 +1940,11 @@ void __init nxp_board_devs_register(void)
 #if defined(CONFIG_LEDS_PWM) || defined(CONFIG_LEDS_PWM_MODULE)
 	printk("plat: add device pwm_led\n");
 	platform_device_register(&pwm_led_device);
+#endif
+
+#if defined(CONFIG_GPIO_KEYS)
+	printk("plat: add device gpio_keys\n");
+	platform_device_register(&gpio_keys_device);
 #endif
 
 	/* END */

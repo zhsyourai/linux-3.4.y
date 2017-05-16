@@ -586,5 +586,11 @@ config KEYBOARD_NXP_KEY
     help
       Say Y here to enable the gpio keypad on SLsiAP SoC based board.
 
+config GPIO_KEYS
+    tristate "GPIO KEYS for board gpio port"
+    depends on KEYBOARD_GPIO
+    help
+      Say Y here to enable the gpio key on board.
+
 
 endif
